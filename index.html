@@ -72,6 +72,40 @@
             font-size: 13px;
             color: #7f8c8d;
         }
+
+        /* ===============================
+           FULLSCREEN EMBED OVERLAY
+           =============================== */
+        #embedOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            display: none;
+        }
+
+        #embedFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #closeEmbed {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: none;
+            font-size: 18px;
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -121,16 +155,26 @@
     <div class="note">Show your work and explain your reasoning.</div>
 </div>
 
+<!-- FULLSCREEN EMBED -->
+<div id="embedOverlay">
+    <button id="closeEmbed">✕</button>
+    <iframe id="embedFrame"></iframe>
+</div>
+
 <script>
     const form = document.getElementById("quizForm");
     const boxes = document.querySelectorAll("textarea");
     const secretM = document.getElementById("secretM");
 
+    const overlay = document.getElementById("embedOverlay");
+    const frame = document.getElementById("embedFrame");
+    const closeBtn = document.getElementById("closeEmbed");
+
     let secretUnlocked = false;
     let keywordMode = false;
 
     /* ===============================
-       12 KEYWORDS YOU CONTROL
+       KEYWORDS → WEBSITES
        =============================== */
     const keywordWebsites = {
         h: "https://script.google.com/macros/s/AKfycbzPIBrWRE8xcZN55tgWLPU3YWIAg4ZOCBClbqwQwDTx/dev",
@@ -179,7 +223,7 @@
         }
     });
 
-    // KEYWORD ACTIVATION: PRESS "1"
+    // KEYWORD ACTIVATION
     document.addEventListener("keydown", function (e) {
         if (!keywordMode) return;
 
@@ -187,7 +231,8 @@
             const keyword = boxes[0].value.trim().toLowerCase();
 
             if (keywordWebsites[keyword]) {
-                window.open(keywordWebsites[keyword], "_blank");
+                frame.src = keywordWebsites[keyword];
+                overlay.style.display = "block";
             } else {
                 alert("Some answers are incorrect. Please try again.");
             }
@@ -199,6 +244,18 @@
             e.preventDefault();
             alert("Some answers are incorrect. Please try again.");
             boxes.forEach(b => b.value = "");
+        }
+    });
+
+    closeBtn.addEventListener("click", () => {
+        frame.src = "";
+        overlay.style.display = "none";
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && overlay.style.display === "block") {
+            frame.src = "";
+            overlay.style.display = "none";
         }
     });
 </script>
