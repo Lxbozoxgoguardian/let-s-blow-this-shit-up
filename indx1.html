@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning App Login</title>
+<style>
+    body {
+        font-family: 'Comic Sans MS', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: #333;
+    }
+
+    .login-container {
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        text-align: center;
+        width: 300px;
+    }
+
+    .login-container h1 {
+        margin-bottom: 30px;
+        color: #ff6f61;
+        text-shadow: 1px 1px 2px #aaa;
+    }
+
+    .login-container input {
+        width: 80%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 2px solid #ff6f61;
+        border-radius: 10px;
+        font-size: 1em;
+    }
+
+    .login-container button {
+        padding: 12px 20px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 10px;
+        background-color: #ff6f61;
+        color: white;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .login-container button:hover {
+        background-color: #ff3b2f;
+        transform: scale(1.05);
+    }
+
+    .switch-link {
+        margin-top: 15px;
+        display: block;
+        color: #ff6f61;
+        cursor: pointer;
+        font-size: 0.9em;
+        text-decoration: underline;
+    }
+
+    .error {
+        color: #f44336;
+        margin-top: 10px;
+        font-size: 0.9em;
+    }
+
+    .success {
+        color: #4caf50;
+    }
+</style>
+</head>
+<body>
+
+<div class="login-container">
+    <h1 id="form-title">Login</h1>
+    <input type="text" id="username" placeholder="Enter your name">
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="handleSubmit()">Login</button>
+    <div id="error" class="error"></div>
+    <span id="switch-form" class="switch-link" onclick="switchForm()">Create Account</span>
+</div>
+
+<script>
+let isLogin = true; // true = login form, false = create account
+
+function switchForm() {
+    isLogin = !isLogin;
+    const title = document.getElementById('form-title');
+    const btn = document.querySelector('.login-container button');
+    const switchLink = document.getElementById('switch-form');
+    const errorDiv = document.getElementById('error');
+
+    errorDiv.textContent = "";
+    if(isLogin) {
+        title.textContent = "Login";
+        btn.textContent = "Login";
+        switchLink.textContent = "Create Account";
+    } else {
+        title.textContent = "Create Account";
+        btn.textContent = "Sign Up";
+        switchLink.textContent = "Back to Login";
+    }
+}
+
+function handleSubmit() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorDiv = document.getElementById('error');
+
+    if(username === "" || password === "") {
+        errorDiv.textContent = "Please fill in both fields!";
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem('users') || "{}");
+
+    if(isLogin) {
+        // Login
+        if(users[username] && users[username] === password) {
+            errorDiv.textContent = "";
+            alert(`Welcome back, ${username}!`);
+            // Redirect to your quiz page
+            window.location.href = "quiz.html"; // replace with your actual page
+        } else {
+            errorDiv.textContent = "Incorrect username or password!";
+        }
+    } else {
+        // Create Account
+        if(users[username]) {
+            errorDiv.textContent = "Username already exists!";
+        } else {
+            users[username] = password;
+            localStorage.setItem('users', JSON.stringify(users));
+            errorDiv.textContent = "Account created successfully!";
+            errorDiv.classList.add('success');
+            // Switch to login
+            setTimeout(() => {
+                switchForm();
+                errorDiv.classList.remove('success');
+            }, 1000);
+        }
+    }
+}
+</script>
+
+</body>
+</html>
