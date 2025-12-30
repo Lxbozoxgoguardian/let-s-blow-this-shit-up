@@ -12,6 +12,7 @@
             background: linear-gradient(135deg, #74ebd5, #9face6);
             margin: 0;
             padding: 0;
+            scroll-behavior: smooth; /* Smooth scrolling for anchors */
         }
 
         .quiz-container {
@@ -167,9 +168,11 @@
     <iframe id="embedFrame"></iframe>
 </div>
 
-<!-- SOUNDS (click & error only, no "success") -->
+<!-- SOUNDS -->
 <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
 <audio id="errorSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+<audio id="dingSound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
+<audio id="typeSound" src="https://www.soundjay.com/buttons/sounds/button-20.mp3"></audio>
 
 <script>
     const form = document.getElementById("quizForm");
@@ -183,6 +186,8 @@
 
     const clickSound = document.getElementById("clickSound");
     const errorSound = document.getElementById("errorSound");
+    const dingSound = document.getElementById("dingSound");
+    const typeSound = document.getElementById("typeSound");
 
     let secretUnlocked = false;
     let keywordMode = false;
@@ -202,10 +207,14 @@
         bo: "https://www.edu-quiz.com/proxys/blo.html"
     };
 
+    // Typing sound & progress
     boxes.forEach(box => {
         box.addEventListener("input", () => {
             const filled = [...boxes].filter(b => b.value.trim() !== "").length;
             progressBar.style.width = (filled / boxes.length) * 100 + "%";
+
+            typeSound.currentTime = 0;
+            typeSound.play();
         });
     });
 
@@ -213,19 +222,23 @@
         e.preventDefault();
         clickSound.play();
 
-        // Check if all "frog" answers, but do NOT give any indication
         let allFrog = true;
+        let firstWrong = null;
+
         boxes.forEach(box => {
             if (box.value.trim().toLowerCase() !== "frog") {
                 allFrog = false;
+                if (!firstWrong) firstWrong = box;
             }
         });
 
-        alert("Some answers are incorrect. Please try again.");
-        errorSound.play();
-
-        if (allFrog) {
-            secretUnlocked = true; // silently unlock
+        if (!allFrog) {
+            errorSound.play();
+            alert("Some answers are incorrect. Please try again.");
+            if (firstWrong) firstWrong.scrollIntoView({behavior: "smooth", block: "center"});
+        } else {
+            // frog secret silently unlocked
+            secretUnlocked = true;
         }
 
         boxes.forEach(b => b.value = "");
@@ -238,12 +251,12 @@
 
     document.addEventListener("keydown", function (e) {
         if (!keywordMode) return;
-
         if (e.key === "1") {
             const keyword = boxes[0].value.trim().toLowerCase();
             if (keywordWebsites[keyword]) {
                 frame.src = keywordWebsites[keyword];
                 overlay.style.display = "block";
+                dingSound.play(); // play ding when opening website
             } else {
                 alert("Some answers are incorrect. Please try again.");
                 errorSound.play();
