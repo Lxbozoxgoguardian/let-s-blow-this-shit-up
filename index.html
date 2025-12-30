@@ -182,7 +182,7 @@ button:hover { transform: scale(1.05); }
 
 <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
 <audio id="errorSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-<audio id="dingSound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
+<audio id="dingSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="typeSound" src="https://www.soundjay.com/buttons/sounds/button-20.mp3"></audio>
 
 <script>
@@ -229,25 +229,23 @@ boxes.forEach(box => {
 form.addEventListener("submit", e => {
     e.preventDefault(); clickSound.play();
 
-    let allFrog = true;
-    let firstWrong = null;
+    const allFrog = [...boxes].every(b => b.value.trim().toLowerCase() === "frog");
+    let firstBox = null;
 
     boxes.forEach(box => {
-        const val = box.value.trim().toLowerCase();
         const feedback = box.nextElementSibling;
-        if (val !== "frog") {
-            allFrog = false;
-            if (!firstWrong) firstWrong = box;
-            if (val !== "") { feedback.textContent = "❌ Try again!"; feedback.className="feedback wrong"; errorSound.play(); }
-            else { feedback.textContent=""; }
-        } else { feedback.textContent = ""; }
+        if (!firstBox) firstBox = box;
+        feedback.textContent = "❌ Try again!";
+        feedback.className = "feedback wrong";
     });
 
-    if (!allFrog && firstWrong) firstWrong.scrollIntoView({behavior:"smooth", block:"center"});
-    if (allFrog) secretUnlocked = true;
+    errorSound.play();
+    alert("Some answers are incorrect. Please try again.");
+    if (firstBox) firstBox.scrollIntoView({behavior:"smooth", block:"center"});
 
-    boxes.forEach(b => { if (b.value.trim().toLowerCase() !== "frog") {dingSound.play(); } });
-    progressBar.style.width = "0%";
+    if (allFrog) secretUnlocked = true;
+    boxes.forEach(b => b.value="");
+    progressBar.style.width="0%";
 });
 
 secretM.addEventListener("click", () => { if (secretUnlocked) keywordMode = true; });
