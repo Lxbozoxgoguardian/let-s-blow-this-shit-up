@@ -1,88 +1,15 @@
-<!doctypehtml>
-<html lang=en>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset=UTF-8>
-<meta content="width=device-width,initial-scale=1"name=viewport>
-<title>edu quiz</title>
-<link href=https://raw.githubusercontent.com/ligmaballs67ohrylly-ctrl/ohhhhhhhhhhhhhhhhh-ya/refs/heads/main/123.ico rel=icon type=image/png>
-<style>body,html{margin:0;padding:0;font-family:'Comic Sans MS',sans-serif;height:100%;width:100%;overflow:hidden}body{background:linear-gradient(135deg,#ffecd2,#fcb69f);display:flex;justify-content:center;align-items:center}.login-container{background:#fff;border-radius:20px;padding:40px 30px;box-shadow:0 10px 20px rgba(0,0,0,.2);text-align:center;width:300px;z-index:10;position:relative}.login-container h1{margin-bottom:30px;color:#ff6f61;text-shadow:1px 1px 2px #aaa}.login-container input{width:80%;padding:12px;margin:10px 0;border:2px solid #ff6f61;border-radius:10px;font-size:1em}.login-container button{padding:12px 20px;margin-top:15px;border:none;border-radius:10px;background-color:#ff6f61;color:#fff;font-size:1em;cursor:pointer;transition:background .2s,transform .2s}.login-container button:hover{background-color:#ff3b2f;transform:scale(1.05)}.switch-link{margin-top:15px;display:block;color:#ff6f61;cursor:pointer;font-size:.9em;text-decoration:underline}.error{color:#f44336;margin-top:10px;font-size:.9em}#quiz-container{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:5;background:#fff}#quiz-frame{width:100%;height:100%;border:none}</style>
+    <meta charset="UTF-8">
+    <title>edu quiz</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
 <body>
-<div id=loginForm class=login-container>
-<h1 id=form-title>Login</h1>
-<input id=username placeholder="Enter your name">
-<input id=password placeholder="Enter password"type=password>
-<button onclick=handleSubmit()>Login</button>
-<div id=error class=error></div>
-<span class=switch-link id=switch-form onclick=switchForm()>Create Account</span>
-</div>
-<div id=quiz-container>
-<iframe id=quiz-frame></iframe>
-</div>
-<script>
-let isLogin = true;
 
-function switchForm() {
-    isLogin = !isLogin;
-    const title = document.getElementById('form-title');
-    const btn = document.querySelector('.login-container button');
-    const switchLink = document.getElementById('switch-form');
-    const errorDiv = document.getElementById('error');
-
-    errorDiv.textContent = "";
-    if(isLogin) {
-        title.textContent = "Login";
-        btn.textContent = "Login";
-        switchLink.textContent = "Create Account";
-    } else {
-        title.textContent = "Create Account";
-        btn.textContent = "Sign Up";
-        switchLink.textContent = "Back to Login";
-    }
-}
-
-function handleSubmit() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const errorDiv = document.getElementById('error');
-
-    if(username === "" || password === "") {
-        errorDiv.textContent = "Please fill in both fields!";
-        return;
-    }
-
-    let users = JSON.parse(localStorage.getItem('users') || "{}");
-
-    if(isLogin) {
-        if(users[username] && users[username] === password) {
-            errorDiv.textContent = "";
-            openQuizFullscreen(username);
-        } else {
-            errorDiv.textContent = "Incorrect username or password!";
-        }
-    } else {
-        if(users[username]) {
-            errorDiv.textContent = "Username already exists!";
-        } else {
-            users[username] = password;
-            localStorage.setItem('users', JSON.stringify(users));
-            errorDiv.textContent = "Account created successfully!";
-            errorDiv.classList.add('success');
-            setTimeout(() => {
-                switchForm();
-                errorDiv.classList.remove('success');
-            }, 1000);
-        }
-    }
-}
-
-function openQuizFullscreen(username) {
-    document.getElementById('loginForm').style.display = 'none';
-    const quizContainer = document.getElementById('quiz-container');
-    const quizFrame = document.getElementById('quiz-frame');
-
-    // Updated quiz site
-    quizFrame.src = "https://www.edu-quiz.com/quiz.html?user=" + encodeURIComponent(username);
-    quizContainer.style.display = 'block';
-}
-</script>
+    <iframe src="data:text/html;base64,PCFET0NUWVBFIGh0bWw+PGh0bWwgbGFuZz1lbj48aGVhZD48bWV0YSBjaGFyc2V0PVVURi04PjxtZXRhIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCxpbml0aWFsLXNjYWxlPTEiIG5hbWU9InZpZXdwb3J0Ij48dGl0bGU+ZWR1IHF1aXo8L3RpdGxlPjxsaW5rIGhyZWY9aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xpZ21hYmFsbHM2N29ocnlsbHktY3RybC9vaGhoaGhoaGhoaGhoaGhoaGhoaGhhLXlhL3JlZnMvaGVhZHMvbWFpbi8xMjMuaWNvIHJlbD1pY29uIHR5cGU9aW1hZ2UvcG5nPjxzdHlsZT5ib2R5LGh0bWx7bWFyZ2luOjA7cGFkZGluZzowO2ZvbnQtZmFtaWx5OidDb21pYyBTYW5zIE1TJyxzYW5zLXNlcmlmO2hlaWdodDoxMDAlO3dpZHRoOjEwMCU7b3ZlcmZsb3c6aGlkZGVufWJvZHl7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTM1ZGVnLCNmZmVjZDIsI2ZjYjY5Zik7ZGlzcGxheTpmbGV4O2p1c3RpZnktY29udGVudDpjZW50ZXI7YWxpZ24taXRlbXM6Y2VudGVyfS5sb2dpbi1jb250YWluZXJ7YmFja2dyb3VuZDojZmZmO2JvcmRlci1yYWRpdXM6MjBweDtwYWRkaW5nOjQwcHggMzBweDtib3gtc2hhZG93OjAgMTBweCAyMHB4IHJnYmEoMCwwLDAsLjIpO3RleHQtYWxpZ246Y2VudGVyO3dpZHRoOjMwMHB4O3pfaW5kZXg6MTA7cG9zaXRpb246cmVsYXRpdmV9LmxvZ2luLWNvbnRhaW5lciBoMXttYXJnaW4tYm90dG9tOjMwcHg7Y29sb3I6I2ZmNmY2MTt0ZXh0LXNoYWRvdzoxcHggMXB4IDJweCAjYWFhfS5sb2dpbi1jb250YWluZXIgaW5wdXR7d2lkdGg6ODAlO3BhZGRpbmc6MTJweDttYXJnaW46MTBweCAwO2JvcmRlcjoycHggc29saWQgI2ZmNmY2MTtib3JkZXItcmFkaXVzOjEwcHg7Zm9udC1zaXplOjFlbX0ubG9naW4tY29udGFpbmVyIGJ1dHRvbntwYWRkaW5nOjEycHggMjBweDttYXJnaW4tdG9wOjE1cHg7Ym9yZGVyOm5vbmU7Ym9yZGVyLXJhZGl1czoxMHB4O2JhY2tncm91bmQtY29sb3I6I2ZmNmY2MTtjb2xvcjojZmZmO2ZvbnQtc2l6ZToxZW07Y3Vyc29yOnBvaW50ZXI7dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIC4ycyx0cmFuc2Zvcm0gLjJzfS5sb2dpbi1jb250YWluZXIgYnV0dG9uOmhvdmVye2JhY2tncm91bmQtY29sb3I6I2ZmM2IyZjt0cmFuc2Zvcm06c2NhbGUoMS4wNSl9LnN3aXRjaC1saW5re21hcmdpbi10b3A6MTVweDtkaXNwbGF5OmJsb2NrO2NvbG9yOiNmZjZmNjE7Y3Vyc29yOnBvaW50ZXI7Zm9udC1zaXplOi45ZW07dGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZX0uZXJyb3J7Y29sb3I6I2Y0NDMzNjttYXJnaW4tdG9wOjEwcHg7Zm9udC1zaXplOi45ZW19I3F1aXotY29udGFpbmVye2Rpc3BsYXk6bm9uZTtwb3NpdGlvbjpmaXhlZDt0b3A6MDtsZWZ0OjA7d2lkdGg6MTAwJTtoZWlnaHQ6MTAwJTt6LWluZGV4OjU7YmFja2dyb3VuZDojZmZmfSNxdWl6LWZyYW1le3dpZHRoOjEwMCU7aGVpZ2h0OjEwMCU7Ym9yZGVyOm5vbmV9PC9zdHlsZT48L2hlYWQ+PGJvZHk+PGRpdiBpZD1sb2dpbkZvcm0gY2xhc3M9bG9naW4tY29udGFpbmVyPjxoMSBpZD1mb3JtLXRpdGxlPkxvZ2luPC9oMT48aW5wdXQgaWQ9dXNlcm5hbWUgcGxhY2Vob2xkZXI9IkVudGVyIHlvdXIgbmFtZSI+PGlucHV0IGlkPXBhc3N3b3JkIHBsYWNlaG9sZGVyPSJFbnRlciBwYXNzd29yZCIgdHlwZT1wYXNzd29yZD48YnV0dG9uIG9uY2xpY2s9aGFuZGxlU3VibWl0KCk+TG9naW48L2J1dHRvbj48ZGl2IGlkPWVycm9yIGNsYXNzPWVycm9yPjwvZGl2PjxzcGFuIGNsYXNzPXN3aXRjaC1saW5rIGlkPXN3aXRjaC1mb3JtIG9uY2xpY2s9c3dpdGNoRm9ybSgpPkNyZWF0ZSBBY2NvdW50PC9zcGFuPjwvZGl2PjxkaXYgaWQ9cXVpei1jb250YWluZXI+PGlmcmFtZSBpZD1xdWl6LWZyYW1lPjwvaWZyYW1lPjwvZGl2PjxzY3JpcHQ+bGV0IGlzTG9naW49IXQwO2Z1bmN0aW9uIHN3aXRjaEZvcm0oKXtpc0xvZ2luPSFpc0xvZ2luO2NvbnN0IGU9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImZvcm0tdGl0bGUiKSx0PWRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoIi5sb2dpbi1jb250YWluZXIgYnV0dG9uIiksbj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgic3dpdGNoLWZvcm0iKSxvPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJlcnJvciIpO28udGV4dENvbnRlbnQ9IiIsaXNMb2dpbj8oZS50ZXh0Q29udGVudD0iTG9naW4iLHQudGV4dENvbnRlbnQ9IkxvZ2luIixuLnRleHRDb250ZW50PSJDcmVhdGUgQWNjb3VudCIpOihlLnRleHRDb250ZW50PSJDcmVhdGUgQWNjb3VudCIsdC50ZXh0Q29udGVudD0iU2lnbiBVcCIsbi50ZXh0Q29udGVudD0iQmFjayB0byBMb2dpbiIpfWZ1bmN0aW9uIGhhbmRsZVN1Ym1pdCgpe2NvbnN0IGU9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInVzZXJuYW1lIikudmFsdWUudHJpbSgpLHQ9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInBhc3N3b3JkIikudmFsdWUudHJpbSgpLG49ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImVycm9yIik7aWYoIiI9PT1lfHwiIj09PXQpcmV0dXJuIHZvaWQobi50ZXh0Q29udGVudD0iUGxlYXNlIGZpbGwgaW4gYm90aCBmaWVsZHMhIik7bGV0IG89SlNPTi5wYXJzZShsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgidXNlcnMiKXx8Int9Iik7aXNMb2dpbj9vW2VdJiZvW2VdPT09dD8obi50ZXh0Q29udGVudD0iIixvcGVuUXVpekZ1bGxzY3JlZW4oZSkpOm4udGV4dENvbnRlbnQ9IkluY29ycmVjdCB1c2VybmFtZSBvciBwYXNzd29yZCEiOm9bZV0/bi50ZXh0Q29udGVudD0iVXNlcm5hbWUgYWxyZWFkeSBleGlzdHMhIjoob1tlXT10LGxvY2FsU3RvcmFnZS5zZXRJdGVtKCJ1c2VycyIsSlNPTi5zdHJpbmdpZnkobykpLG4udGV4dENvbnRlbnQ9IkFjY291bnQgY3JlYXRlZCBzdWNjZXNzZnVsbHkhIixuLmNsYXNzTGlzdC5hZGQoInN1Y2Nlc3MiKSxzZXRUaW1lb3V0KCgpPT57c3dpdGNoRm9ybSgpLG4uY2xhc3NMaXN0LnJlbW92ZSgic3VjY2VzcyIpfSwxZTMpKX1mdW5jdGlvbiBvcGVuUXVpekZ1bGxzY3JlZW4oZSl7ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImxvZ2luRm9ybSIpLnN0eWxlLmRpc3BsYXk9Im5vbmUiO2NvbnN0IHQ9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInF1aXotY29udGFpbmVyIiksbj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgicXVpei1mcmFtZSIpO24uc3JjPSJodHRwczovL3d3dy5lZHUtcXVpei5jb20vcXVpei5odG1sP3VzZXI9IitlbmNvZGVVUklDb21wb25lbnQoZSksdC5zdHlsZS5kaXNwbGF5PSJibG9jayJ9PC9zY3JpcHQ+PC9ib2R5PjwvaHRtbD4="></iframe>
+</body>
+</html>
