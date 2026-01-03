@@ -1,97 +1,182 @@
-<!doctypehtml>
-<html lang=en>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset=UTF-8>
-<meta content="width=device-width,initial-scale=1"name=viewport>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>edu quiz</title>
-<link href=https://raw.githubusercontent.com/ligmaballs67ohrylly-ctrl/ohhhhhhhhhhhhhhhhh-ya/refs/heads/main/123.ico rel=icon type=image/png>
-<style>body,html{margin:0;padding:0;font-family:'Comic Sans MS',sans-serif;height:100%;width:100%;overflow:hidden}body{background:linear-gradient(135deg,#ffecd2,#fcb69f);display:flex;justify-content:center;align-items:center}.login-container{background:#fff;border-radius:20px;padding:40px 30px;box-shadow:0 10px 20px rgba(0,0,0,.2);text-align:center;width:300px;z-index:10;position:relative}.login-container h1{margin-bottom:30px;color:#ff6f61;text-shadow:1px 1px 2px #aaa}.login-container input{width:80%;padding:12px;margin:10px 0;border:2px solid #ff6f61;border-radius:10px;font-size:1em}.login-container button{padding:12px 20px;margin-top:15px;border:none;border-radius:10px;background-color:#ff6f61;color:#fff;font-size:1em;cursor:pointer;transition:background .2s,transform .2s}.login-container button:hover{background-color:#ff3b2f;transform:scale(1.05)}.switch-link{margin-top:15px;display:block;color:#ff6f61;cursor:pointer;font-size:.9em;text-decoration:underline}.error{color:#f44336;margin-top:10px;font-size:.9em}#quiz-container{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:5;background:#fff}#quiz-frame{width:100%;height:100%;border:none}</style>
-    <meta charset="UTF-8">
-    <title>edu quiz</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; }
-    </style>
-</head>
-<body>
-<div id=loginForm class=login-container>
-<h1 id=form-title>Login</h1>
-<input id=username placeholder="Enter your name">
-<input id=password placeholder="Enter password"type=password>
-<button onclick=handleSubmit()>Login</button>
-<div id=error class=error></div>
-<span class=switch-link id=switch-form onclick=switchForm()>Create Account</span>
-</div>
-<div id=quiz-container>
-<iframe id=quiz-frame></iframe>
-</div>
-<script>
-let isLogin = true;
 
-function switchForm() {
-    isLogin = !isLogin;
-    const title = document.getElementById('form-title');
-    const btn = document.querySelector('.login-container button');
-    const switchLink = document.getElementById('switch-form');
-    const errorDiv = document.getElementById('error');
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ligmaballs67ohrylly-ctrl/ohhhhhhhhhhhhhhhhh-ya/refs/heads/main/123.ico">
 
-    errorDiv.textContent = "";
-    if(isLogin) {
-        title.textContent = "Login";
-        btn.textContent = "Login";
-        switchLink.textContent = "Create Account";
-    } else {
-        title.textContent = "Create Account";
-        btn.textContent = "Sign Up";
-        switchLink.textContent = "Back to Login";
-    }
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: "Comic Sans MS", sans-serif;
+    overflow: hidden;
 }
 
-function handleSubmit() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const errorDiv = document.getElementById('error');
+body {
+    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    if(username === "" || password === "") {
-        errorDiv.textContent = "Please fill in both fields!";
+.login-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 300px;
+    z-index: 10;
+}
+
+.login-container h1 {
+    margin-bottom: 30px;
+    color: #ff6f61;
+}
+
+.login-container input {
+    width: 80%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #ff6f61;
+    border-radius: 10px;
+    font-size: 1em;
+}
+
+.login-container button {
+    padding: 12px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #ff6f61;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background-color: #ff3b2f;
+}
+
+.switch-link {
+    margin-top: 15px;
+    display: block;
+    color: #ff6f61;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-decoration: underline;
+}
+
+.error {
+    color: #f44336;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.success {
+    color: #4CAF50;
+}
+
+#quiz-container {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 5;
+}
+
+#quiz-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN / SIGNUP -->
+<div id="loginForm" class="login-container">
+    <h1 id="form-title">Login</h1>
+    <input id="username" placeholder="Enter your name">
+    <input id="password" type="password" placeholder="Enter password">
+    <button onclick="handleSubmit()">Login</button>
+    <div id="error" class="error"></div>
+    <span class="switch-link" id="switch-form" onclick="switchForm()">Create Account</span>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-container">
+    <iframe id="quiz-frame"></iframe>
+</div>
+
+<script>
+let isLogin = true;
+let quizStarted = false;
+
+/* SWITCH LOGIN / SIGNUP */
+function switchForm() {
+    isLogin = !isLogin;
+    document.getElementById("form-title").textContent = isLogin ? "Login" : "Create Account";
+    document.querySelector("button").textContent = isLogin ? "Login" : "Sign Up";
+    document.getElementById("switch-form").textContent = isLogin ? "Create Account" : "Back to Login";
+    document.getElementById("error").textContent = "";
+}
+
+/* SUBMIT */
+function handleSubmit() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const error = document.getElementById("error");
+
+    if (!username || !password) {
+        error.textContent = "Please fill in both fields!";
         return;
     }
 
-    let users = JSON.parse(localStorage.getItem('users') || "{}");
+    let users = JSON.parse(localStorage.getItem("users") || "{}");
 
-    if(isLogin) {
-        if(users[username] && users[username] === password) {
-            errorDiv.textContent = "";
+    if (isLogin) {
+        if (users[username] === password) {
             openQuizFullscreen(username);
         } else {
-            errorDiv.textContent = "Incorrect username or password!";
+            error.textContent = "Incorrect username or password!";
         }
     } else {
-        if(users[username]) {
-            errorDiv.textContent = "Username already exists!";
+        if (users[username]) {
+            error.textContent = "Username already exists!";
         } else {
             users[username] = password;
-            localStorage.setItem('users', JSON.stringify(users));
-            errorDiv.textContent = "Account created successfully!";
-            errorDiv.classList.add('success');
-            setTimeout(() => {
-                switchForm();
-                errorDiv.classList.remove('success');
-            }, 1000);
+            localStorage.setItem("users", JSON.stringify(users));
+            error.textContent = "Account created!";
+            error.className = "success";
+            setTimeout(switchForm, 1000);
         }
     }
 }
 
+/* OPEN QUIZ */
 function openQuizFullscreen(username) {
-    document.getElementById('loginForm').style.display = 'none';
-    const quizContainer = document.getElementById('quiz-container');
-    const quizFrame = document.getElementById('quiz-frame');
+    quizStarted = true;
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    document.getElementById("quiz-frame").src =
+        "https://www.edu-quiz.com/quiz.html?user=" + encodeURIComponent(username);
+}
 
-    // Updated quiz site
-    quizFrame.src = "https://www.edu-quiz.com/quiz.html?user=" + encodeURIComponent(username);
-    quizContainer.style.display = 'block';
+/* ⚠️ CLOSE / REFRESH WARNING */
+window.addEventListener("beforeunload", function (event) {
+    if (quizStarted) {
+        event.preventDefault();
+        event.returnValue = "";
+    }
+});
 </script>
 
+</body>
 </html>
