@@ -15,7 +15,7 @@ body {
     overflow: hidden;
 }
 
-/* ===== BUBBLES ===== */
+/* ===== REALISTIC BUBBLES ===== */
 .bubbles {
     position: fixed;
     inset: 0;
@@ -25,21 +25,40 @@ body {
 
 .bubble {
     position: absolute;
-    bottom: -120px;
-    background: rgba(255,255,255,0.35);
+    bottom: -150px;
     border-radius: 50%;
-    animation: floatUp linear infinite;
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(255,255,255,0.9),
+            rgba(255,255,255,0.4) 30%,
+            rgba(255,255,255,0.15) 60%,
+            rgba(255,255,255,0.05) 100%
+        );
+    box-shadow:
+        inset -6px -6px 12px rgba(255,255,255,0.35),
+        inset 6px 6px 12px rgba(255,255,255,0.15);
+    filter: blur(0.3px);
+    animation:
+        rise linear infinite,
+        drift ease-in-out infinite;
 }
 
-@keyframes floatUp {
+@keyframes rise {
     from {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
         opacity: 0.6;
     }
     to {
-        transform: translateY(-120vh) scale(1.25);
+        transform: translateY(-130vh);
         opacity: 0;
     }
+}
+
+@keyframes drift {
+    0%   { margin-left: 0; }
+    50%  { margin-left: 20px; }
+    100% { margin-left: -20px; }
 }
 
 /* ===== LOGIN ===== */
@@ -122,14 +141,29 @@ iframe {
 
 <!-- BUBBLE BACKGROUND -->
 <div class="bubbles">
-    <div class="bubble" style="left:5%; width:40px; height:40px; animation-duration:18s;"></div>
-    <div class="bubble" style="left:15%; width:25px; height:25px; animation-duration:12s;"></div>
-    <div class="bubble" style="left:25%; width:60px; height:60px; animation-duration:22s;"></div>
-    <div class="bubble" style="left:35%; width:20px; height:20px; animation-duration:10s;"></div>
-    <div class="bubble" style="left:50%; width:50px; height:50px; animation-duration:20s;"></div>
-    <div class="bubble" style="left:65%; width:30px; height:30px; animation-duration:14s;"></div>
-    <div class="bubble" style="left:75%; width:70px; height:70px; animation-duration:26s;"></div>
-    <div class="bubble" style="left:85%; width:35px; height:35px; animation-duration:16s;"></div>
+    <!-- small -->
+    <div class="bubble" style="left:4%; width:18px; height:18px; animation-duration:14s, 6s;"></div>
+    <div class="bubble" style="left:8%; width:22px; height:22px; animation-duration:16s, 7s;"></div>
+    <div class="bubble" style="left:12%; width:15px; height:15px; animation-duration:12s, 5s;"></div>
+    <div class="bubble" style="left:18%; width:26px; height:26px; animation-duration:18s, 8s;"></div>
+
+    <!-- medium -->
+    <div class="bubble" style="left:25%; width:40px; height:40px; animation-duration:22s, 10s;"></div>
+    <div class="bubble" style="left:30%; width:34px; height:34px; animation-duration:20s, 9s;"></div>
+    <div class="bubble" style="left:35%; width:46px; height:46px; animation-duration:26s, 12s;"></div>
+    <div class="bubble" style="left:42%; width:38px; height:38px; animation-duration:21s, 9s;"></div>
+
+    <!-- large -->
+    <div class="bubble" style="left:50%; width:70px; height:70px; animation-duration:34s, 14s;"></div>
+    <div class="bubble" style="left:58%; width:60px; height:60px; animation-duration:30s, 13s;"></div>
+    <div class="bubble" style="left:66%; width:80px; height:80px; animation-duration:38s, 16s;"></div>
+
+    <!-- mixed -->
+    <div class="bubble" style="left:72%; width:28px; height:28px; animation-duration:17s, 7s;"></div>
+    <div class="bubble" style="left:76%; width:45px; height:45px; animation-duration:25s, 11s;"></div>
+    <div class="bubble" style="left:82%; width:24px; height:24px; animation-duration:15s, 6s;"></div>
+    <div class="bubble" style="left:88%; width:55px; height:55px; animation-duration:29s, 13s;"></div>
+    <div class="bubble" style="left:94%; width:20px; height:20px; animation-duration:13s, 5s;"></div>
 </div>
 
 <!-- LOGIN SCREEN -->
@@ -157,7 +191,6 @@ iframe {
 
 <script>
 let mode = "login";
-
 const EMBED_URL = "https://www.edu-quiz.com/quiz";
 
 function toggleMode() {
