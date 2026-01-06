@@ -2,81 +2,172 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>edu quiz</title>
+<link href=https://raw.githubusercontent.com/ligmaballs67ohrylly-ctrl/ohhhhhhhhhhhhhhhhh-ya/refs/heads/main/123.ico rel=icon type=image/png>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learning App Login</title>
+
 <style>
-body, html {
-margin: 0;
-padding: 0;
-font-family: 'Comic Sans MS', sans-serif;
-height: 100%;
-width: 100%;
-        overflow: hidden;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    margin: 0;
+    height: 100vh;
 }
 
-body {
-background: linear-gradient(135deg, #ffecd2, #fcb69f);
-display: flex;
-justify-content: center;
-align-items: center;
-        overflow: hidden;
-}
 
 .login-container {
-@@ -79,14 +79,21 @@
-font-size: 0.9em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-    iframe {
-    #quiz-container {
-        display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-        border: none;
-z-index: 5;
-        background: #fff;
-    }
+.box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
 
-    #quiz-frame {
-        width: 100%;
-        height: 100%;
-        border: none;
+h2 {
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #4facfe;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.switch {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.switch span {
+    color: #4facfe;
+    cursor: pointer;
+}
+
+.message {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: red;
+}
+
+
+#app {
+    display: none;
+    height: 100vh;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 </style>
 </head>
-@@ -101,6 +108,10 @@
-<span id="switch-form" class="switch-link" onclick="switchForm()">Create Account</span>
+<body>
+
+
+<div class="login-container" id="loginScreen">
+    <div class="box">
+        <h2 id="title">Login</h2>
+
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+
+        <button onclick="submit()">Login</button>
+
+        <div class="switch">
+            <span onclick="toggleMode()">Create an account</span>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
 </div>
 
-<div id="quiz-container">
-    <iframe id="quiz-frame"></iframe>
+
+<div id="app">
+    <iframe id="appFrame"></iframe>
 </div>
 
 <script>
-let isLogin = true;
+let mode = "login";
 
-@@ -158,17 +169,16 @@
+
+const EMBED_URL = "https://www.edu-quiz.com/quiz";
+
+function toggleMode() {
+    const title = document.getElementById("title");
+    const button = document.querySelector("button");
+    const switchText = document.querySelector(".switch span");
+    const message = document.getElementById("message");
+    message.textContent = "";
+
+    if (mode === "login") {
+        mode = "register";
+        title.textContent = "Create Account";
+        button.textContent = "Create Account";
+        switchText.textContent = "Already have an account? Login";
+    } else {
+        mode = "login";
+        title.textContent = "Login";
+        button.textContent = "Login";
+        switchText.textContent = "Create an account";
+    }
 }
-}
 
-// Embed the quiz in fullscreen
-function openQuizFullscreen(username) {
-    const loginForm = document.getElementById('loginForm');
-    loginForm.style.display = 'none'; // hide login
-    document.getElementById('loginForm').style.display = 'none';
-    const quizContainer = document.getElementById('quiz-container');
-    const quizFrame = document.getElementById('quiz-frame');
+function submit() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
 
-    const quizSlug = "quiz.html"; // replace with your actual quiz slug
-    const iframe = document.createElement('iframe');
-    iframe.src = quizSlug + "?user=" + encodeURIComponent(username);
-    document.body.appendChild(iframe);
-    // Replace with your quiz slug or URL that you control
-    quizFrame.src = "quiz-slug.html?user=" + encodeURIComponent(username);
-    quizContainer.style.display = 'block';
+    if (!username || !password) {
+        message.textContent = "Please fill in all fields.";
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if (mode === "register") {
+        if (users[username]) {
+            message.textContent = "Username already exists.";
+            return;
+        }
+        users[username] = password;
+        localStorage.setItem("users", JSON.stringify(users));
+        message.style.color = "green";
+        message.textContent = "Account created! Log in.";
+    } else {
+        if (!users[username] || users[username] !== password) {
+            message.textContent = "Invalid username or password.";
+            return;
+        }
+
+
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        document.getElementById("appFrame").src = EMBED_URL;
+    }
 }
 </script>
 
