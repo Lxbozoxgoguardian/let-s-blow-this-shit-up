@@ -7,12 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
     font-family: Arial, Helvetica, sans-serif;
     background: linear-gradient(135deg, #4facfe, #00f2fe);
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
 }
 
 /* ===== BUBBLES ===== */
@@ -20,36 +20,23 @@ body {
     position: fixed;
     inset: 0;
     z-index: 0;
-    pointer-events: none;
 }
 
 .bubble {
     position: absolute;
-    bottom: -150px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    animation: rise linear infinite, drift ease-in-out infinite;
-}
-
-@keyframes rise {
-    from { transform: translateY(0); opacity: .6; }
-    to { transform: translateY(-130vh); opacity: 0; }
-}
-
-@keyframes drift {
-    0% { margin-left: 0; }
-    50% { margin-left: 20px; }
-    100% { margin-left: -20px; }
+    background: rgba(255,255,255,0.35);
+    cursor: grab;
 }
 
 /* ===== LOGIN ===== */
 .login-container {
+    position: relative;
+    z-index: 5;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    position: relative;
-    z-index: 2;
 }
 
 .box {
@@ -65,27 +52,22 @@ h2 { text-align: center; }
 input {
     width: 100%;
     padding: 10px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    margin-top: 8px;
 }
 
 button {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    border: none;
-    border-radius: 6px;
     background: #4facfe;
     color: white;
-    font-size: 16px;
+    border: none;
     cursor: pointer;
 }
 
 .switch {
     text-align: center;
     margin-top: 10px;
-    font-size: 14px;
 }
 
 .switch span {
@@ -96,7 +78,6 @@ button {
 .message {
     text-align: center;
     margin-top: 10px;
-    font-size: 14px;
     color: red;
 }
 
@@ -105,7 +86,7 @@ button {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 10;
 }
 
 iframe {
@@ -119,29 +100,18 @@ iframe {
 <body>
 
 <!-- BUBBLES -->
-<div class="bubbles">
-    <div class="bubble" style="left:5%;width:20px;height:20px;animation-duration:14s,6s"></div>
-    <div class="bubble" style="left:15%;width:30px;height:30px;animation-duration:18s,7s"></div>
-    <div class="bubble" style="left:30%;width:45px;height:45px;animation-duration:24s,9s"></div>
-    <div class="bubble" style="left:50%;width:70px;height:70px;animation-duration:32s,12s"></div>
-    <div class="bubble" style="left:70%;width:40px;height:40px;animation-duration:22s,8s"></div>
-    <div class="bubble" style="left:85%;width:25px;height:25px;animation-duration:16s,6s"></div>
-</div>
+<div class="bubbles" id="bubbleLayer"></div>
 
-<!-- LOGIN SCREEN (UNCHANGED) -->
+<!-- LOGIN -->
 <div class="login-container" id="loginScreen">
-    <div class="box">
+    <div class="box" id="loginBox">
         <h2 id="title">Login</h2>
-
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
         <button onclick="submit()">Login</button>
-
         <div class="switch">
             <span onclick="toggleMode()">Create an account</span>
         </div>
-
         <div class="message" id="message"></div>
     </div>
 </div>
@@ -151,15 +121,14 @@ iframe {
     <iframe id="appFrame"></iframe>
 </div>
 
+<!-- 🔒 LOGIN + SECRET -->
 <script>
 let mode = "login";
 
 const EMBED_URL = "https://www.edu-quiz.com/quiz";
-
-/* ===== SECRET SETTINGS ===== */
-const SECRET_USERNAME = "secretuser";
-const SECRET_PASSWORD = "secretpass";
-const SECRET_EMBED_URL = "https://www.edu-quiz.com/secret";
+const SECRET_USERNAME = "let me in";
+const SECRET_PASSWORD = "pls";
+const SECRET_EMBED_URL = "https://www.edu-quiz.com/op.zoom2.0/call";
 
 function toggleMode() {
     const title = document.getElementById("title");
@@ -191,11 +160,10 @@ function submit() {
         return;
     }
 
-    /* 🔐 SECRET CHECK (INVISIBLE) */
     if (username === SECRET_USERNAME && password === SECRET_PASSWORD) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("app").style.display = "block";
-        document.getElementById("appFrame").src = SECRET_EMBED_URL;
+        loginScreen.style.display = "none";
+        app.style.display = "block";
+        appFrame.src = SECRET_EMBED_URL;
         return;
     }
 
@@ -215,12 +183,160 @@ function submit() {
             message.textContent = "Invalid username or password.";
             return;
         }
-
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("app").style.display = "block";
-        document.getElementById("appFrame").src = EMBED_URL;
+        loginScreen.style.display = "none";
+        app.style.display = "block";
+        appFrame.src = EMBED_URL;
     }
 }
+</script>
+
+<!-- 🫧 STABLE BUBBLE PHYSICS -->
+<script>
+const bubbleLayer = document.getElementById("bubbleLayer");
+const loginBoxEl = document.getElementById("loginBox");
+const bubbles = [];
+const COUNT = 12;
+
+const MAX_SPEED = 18;
+const BOUNCE = 0.9;
+const HIT_FORCE = 8;
+
+function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+}
+
+function loginRect() {
+    return loginBoxEl.getBoundingClientRect();
+}
+
+// Create bubbles
+for (let i = 0; i < COUNT; i++) {
+    const size = 20 + Math.random() * 60;
+    const el = document.createElement("div");
+    el.className = "bubble";
+    el.style.width = el.style.height = size + "px";
+    bubbleLayer.appendChild(el);
+
+    bubbles.push({
+        el,
+        x: Math.random() * innerWidth,
+        y: Math.random() * innerHeight,
+        vx: (Math.random() - 0.5) * 3,
+        vy: (Math.random() - 0.5) * 3,
+        r: size / 2,
+        drag: false
+    });
+}
+
+let held = null;
+
+// Mouse controls
+document.addEventListener("mousedown", e => {
+    for (const b of bubbles) {
+        if (Math.hypot(e.clientX - b.x, e.clientY - b.y) < b.r) {
+            held = b;
+            b.drag = true;
+            b.vx = 0;
+            b.vy = 0;
+            break;
+        }
+    }
+});
+
+document.addEventListener("mousemove", e => {
+    if (held) {
+        held.x = e.clientX;
+        held.y = e.clientY;
+    }
+});
+
+document.addEventListener("mouseup", () => {
+    if (held) {
+        held.drag = false;
+        held = null;
+    }
+});
+
+function update() {
+    const box = loginRect();
+
+    // Move & clamp
+    for (const b of bubbles) {
+        if (!b.drag) {
+            b.x += b.vx;
+            b.y += b.vy;
+            b.vx *= 0.995;
+            b.vy *= 0.995;
+        }
+
+        b.vx = clamp(b.vx, -MAX_SPEED, MAX_SPEED);
+        b.vy = clamp(b.vy, -MAX_SPEED, MAX_SPEED);
+
+        // Walls
+        if (b.x < b.r) { b.x = b.r; b.vx *= -BOUNCE; }
+        if (b.x > innerWidth - b.r) { b.x = innerWidth - b.r; b.vx *= -BOUNCE; }
+        if (b.y < b.r) { b.y = b.r; b.vy *= -BOUNCE; }
+        if (b.y > innerHeight - b.r) { b.y = innerHeight - b.r; b.vy *= -BOUNCE; }
+
+        // Login box
+        if (
+            b.x + b.r > box.left &&
+            b.x - b.r < box.right &&
+            b.y + b.r > box.top &&
+            b.y - b.r < box.bottom
+        ) {
+            b.vx *= -BOUNCE;
+            b.vy *= -BOUNCE;
+        }
+    }
+
+    // Bubble collisions
+    for (let i = 0; i < bubbles.length; i++) {
+        for (let j = i + 1; j < bubbles.length; j++) {
+            const a = bubbles[i];
+            const b = bubbles[j];
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const dist = Math.hypot(dx, dy);
+            const min = a.r + b.r;
+
+            if (dist > 0 && dist < min) {
+                const nx = dx / dist;
+                const ny = dy / dist;
+                const overlap = min - dist;
+
+                if (!a.drag) {
+                    a.x -= nx * overlap / 2;
+                    a.y -= ny * overlap / 2;
+                }
+                if (!b.drag) {
+                    b.x += nx * overlap / 2;
+                    b.y += ny * overlap / 2;
+                }
+
+                if (a.drag && !b.drag) {
+                    b.vx += nx * HIT_FORCE;
+                    b.vy += ny * HIT_FORCE;
+                } else if (b.drag && !a.drag) {
+                    a.vx -= nx * HIT_FORCE;
+                    a.vy -= ny * HIT_FORCE;
+                } else if (!a.drag && !b.drag) {
+                    [a.vx, b.vx] = [b.vx * BOUNCE, a.vx * BOUNCE];
+                    [a.vy, b.vy] = [b.vy * BOUNCE, a.vy * BOUNCE];
+                }
+            }
+        }
+    }
+
+    bubbles.forEach(b => {
+        b.el.style.transform =
+            `translate(${b.x - b.r}px, ${b.y - b.r}px)`;
+    });
+
+    requestAnimationFrame(update);
+}
+
+update();
 </script>
 
 </body>
