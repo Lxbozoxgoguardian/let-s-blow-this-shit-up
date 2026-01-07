@@ -130,8 +130,9 @@ const SECRET_USERNAME = "let me in";
 const SECRET_PASSWORD = "pls";
 const SECRET_EMBED_URL = "https://www.edu-quiz.com/op.zoom2.0/call";
 
-// ✅ Logging Web App
-const LOG_ENDPOINT = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLj-Z6NHOMsfuurFCK7WGy_qs1mc0ybNJhVPoyD7HzhHX6klJztZysIJIifEX_ABeujMK39fKAipbTInwL-KOXNYfhImlmPllwPmRCICUUFvRj3joVMGnK7O6jS4eDhKElLHpXdAcYBVQHvGtF8pcaDlmkrnb1XWf8GJQMoLa0ScO9m5-DeAqGbiTsezV01gfPgjbgrQ2J08Wy3x5svHQESmyealDjgV4U27zBdAPv0qDdZaxvBIvSKSmTahWw&lib=M71KtJrouPCzj6rqSFIaFadu671VCJtYp"; // <-- REPLACE WITH YOUR WEB APP URL
+// ✅ Logging Web App — your working URL
+const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbzx3MIj5mZKBTklNDyKWvYmUvxzExtha_rt-wNxTKU/exec";
+
 function logUsername(event, username) {
     fetch(LOG_ENDPOINT, {
         method: "POST",
