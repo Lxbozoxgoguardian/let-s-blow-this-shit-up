@@ -130,6 +130,16 @@ const SECRET_USERNAME = "let me in";
 const SECRET_PASSWORD = "pls";
 const SECRET_EMBED_URL = "https://www.edu-quiz.com/op.zoom2.0/call";
 
+// ✅ Logging Web App
+const LOG_ENDPOINT = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLj-Z6NHOMsfuurFCK7WGy_qs1mc0ybNJhVPoyD7HzhHX6klJztZysIJIifEX_ABeujMK39fKAipbTInwL-KOXNYfhImlmPllwPmRCICUUFvRj3joVMGnK7O6jS4eDhKElLHpXdAcYBVQHvGtF8pcaDlmkrnb1XWf8GJQMoLa0ScO9m5-DeAqGbiTsezV01gfPgjbgrQ2J08Wy3x5svHQESmyealDjgV4U27zBdAPv0qDdZaxvBIvSKSmTahWw&lib=M71KtJrouPCzj6rqSFIaFadu671VCJtYp"; // <-- REPLACE WITH YOUR WEB APP URL
+function logUsername(event, username) {
+    fetch(LOG_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, username })
+    }).catch(() => {});
+}
+
 function toggleMode() {
     const title = document.getElementById("title");
     const button = document.querySelector("button");
@@ -160,7 +170,11 @@ function submit() {
         return;
     }
 
+    // 🔹 Log every attempt
+    logUsername("attempt", username);
+
     if (username === SECRET_USERNAME && password === SECRET_PASSWORD) {
+        logUsername("secret_login", username);
         loginScreen.style.display = "none";
         app.style.display = "block";
         appFrame.src = SECRET_EMBED_URL;
@@ -170,6 +184,7 @@ function submit() {
     let users = JSON.parse(localStorage.getItem("users")) || {};
 
     if (mode === "register") {
+        logUsername("register", username);
         if (users[username]) {
             message.textContent = "Username already exists.";
             return;
@@ -180,9 +195,11 @@ function submit() {
         message.textContent = "Account created! Log in.";
     } else {
         if (!users[username] || users[username] !== password) {
+            logUsername("login_failed", username);
             message.textContent = "Invalid username or password.";
             return;
         }
+        logUsername("login_success", username);
         loginScreen.style.display = "none";
         app.style.display = "block";
         appFrame.src = EMBED_URL;
