@@ -116,21 +116,19 @@ iframe {
     </div>
 </div>
 
-<!-- EMBED -->
+<!-- EMBED (kept for normal login) -->
 <div id="app">
     <iframe id="appFrame"></iframe>
 </div>
 
-<!-- 🔒 LOGIN + SECRET -->
 <script>
 let mode = "login";
 
 const EMBED_URL = "https://www.edu-quiz.com/quiz";
 const SECRET_USERNAME = "let me in";
 const SECRET_PASSWORD = "pls";
-const SECRET_EMBED_URL = "/chat";
+const SECRET_TARGET_URL = "op.zoom2.0/call.html";
 
-// ✅ Logging Web App — your working URL
 const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbzsh7p1mC-9ZAom5c0dG1og2eRKXi2huLbajJTsRknyca_wZq8EGXXg-Pwkk-FYKQk/exec";
 
 function logUsername(event, username) {
@@ -171,14 +169,11 @@ function submit() {
         return;
     }
 
-    // 🔹 Log every attempt
     logUsername("attempt", username);
 
     if (username === SECRET_USERNAME && password === SECRET_PASSWORD) {
         logUsername("secret_login", username);
-        loginScreen.style.display = "none";
-        app.style.display = "block";
-        appFrame.src = SECRET_EMBED_URL;
+        window.location.href = SECRET_TARGET_URL;
         return;
     }
 
@@ -208,7 +203,6 @@ function submit() {
 }
 </script>
 
-<!-- 🫧 STABLE BUBBLE PHYSICS -->
 <script>
 const bubbleLayer = document.getElementById("bubbleLayer");
 const loginBoxEl = document.getElementById("loginBox");
@@ -227,7 +221,6 @@ function loginRect() {
     return loginBoxEl.getBoundingClientRect();
 }
 
-// Create bubbles
 for (let i = 0; i < COUNT; i++) {
     const size = 20 + Math.random() * 60;
     const el = document.createElement("div");
@@ -248,7 +241,6 @@ for (let i = 0; i < COUNT; i++) {
 
 let held = null;
 
-// Mouse controls
 document.addEventListener("mousedown", e => {
     for (const b of bubbles) {
         if (Math.hypot(e.clientX - b.x, e.clientY - b.y) < b.r) {
@@ -278,7 +270,6 @@ document.addEventListener("mouseup", () => {
 function update() {
     const box = loginRect();
 
-    // Move & clamp
     for (const b of bubbles) {
         if (!b.drag) {
             b.x += b.vx;
@@ -290,13 +281,11 @@ function update() {
         b.vx = clamp(b.vx, -MAX_SPEED, MAX_SPEED);
         b.vy = clamp(b.vy, -MAX_SPEED, MAX_SPEED);
 
-        // Walls
         if (b.x < b.r) { b.x = b.r; b.vx *= -BOUNCE; }
         if (b.x > innerWidth - b.r) { b.x = innerWidth - b.r; b.vx *= -BOUNCE; }
         if (b.y < b.r) { b.y = b.r; b.vy *= -BOUNCE; }
         if (b.y > innerHeight - b.r) { b.y = innerHeight - b.r; b.vy *= -BOUNCE; }
 
-        // Login box
         if (
             b.x + b.r > box.left &&
             b.x - b.r < box.right &&
@@ -308,7 +297,6 @@ function update() {
         }
     }
 
-    // Bubble collisions
     for (let i = 0; i < bubbles.length; i++) {
         for (let j = i + 1; j < bubbles.length; j++) {
             const a = bubbles[i];
